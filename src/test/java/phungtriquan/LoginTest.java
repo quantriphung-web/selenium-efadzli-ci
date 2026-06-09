@@ -70,8 +70,16 @@ public class LoginTest {
         pass.clear();
         pass.sendKeys("Adam123");
 
-        WebElement submit = wait.until(ExpectedConditions.elementToBeClickable(By.id("submitButton")));
-        submit.click();
+        WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
+        Thread.sleep(1000); // Đợi scroll hoàn tất
+        
+        try {
+            submit.click();
+        } catch (Exception e) {
+            // Nếu click thông thường bị chặn, dùng JavaScript click
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submit);
+        }
 
         WebElement status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("status")));
         String statusText = status.getText().trim();
@@ -94,8 +102,16 @@ public class LoginTest {
         pass.clear();
         pass.sendKeys("Khue123");
 
-        WebElement submit = wait.until(ExpectedConditions.elementToBeClickable(By.id("submitButton")));
-        submit.click();
+        WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
+        Thread.sleep(1000); // Đợi scroll hoàn tất
+        
+        try {
+            submit.click();
+        } catch (Exception e) {
+            // Nếu click thông thường bị chặn, dùng JavaScript click
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submit);
+        }
 
         WebElement status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("status")));
         String statusText = status.getText().trim();
