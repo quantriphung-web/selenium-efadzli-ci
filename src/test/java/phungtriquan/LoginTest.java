@@ -28,8 +28,7 @@ public class LoginTest {
     void setUp() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
-        
-        // Cấu hình chạy headless cho CI
+
         String headless = System.getProperty("headless");
         if ("true".equalsIgnoreCase(headless)) {
             options.addArguments("--headless=new");
@@ -37,15 +36,14 @@ public class LoginTest {
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--window-size=1920,1080");
         }
-        
+
         driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     @AfterEach
-    void pauseBetweenTests() throws InterruptedException {
-        // Giảm thời gian chờ để CI chạy nhanh hơn, hoặc bỏ qua nếu không cần thiết
-        // Thread.sleep(1000);
+    void pauseBetweenTests() {
+        // no-op
     }
 
     @AfterAll
@@ -55,12 +53,13 @@ public class LoginTest {
         }
     }
 
+    // T01: Đăng nhập đúng thông tin
     @Test
     @Order(1)
     void testLoginAdam() throws InterruptedException {
         driver.get(url);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        
+
         WebElement user = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", user);
         user.clear();
@@ -72,53 +71,55 @@ public class LoginTest {
 
         WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
-        Thread.sleep(1000); // Đợi scroll hoàn tất
-        
+        Thread.sleep(1000);
+
         try {
             submit.click();
         } catch (Exception e) {
-            // Nếu click thông thường bị chặn, dùng JavaScript click
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submit);
         }
 
         WebElement status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("status")));
         String statusText = status.getText().trim();
 
-        Assertions.assertEquals("Congratulations!", statusText, "Expected status to show success message after submitting.");
+        Assertions.assertEquals("Congratulations!", statusText,
+                "Expected success message after correct login.");
     }
 
+    // T02: Đăng nhập sai thông tin
     @Test
     @Order(2)
-    void testLoginKhue() throws InterruptedException {
+    void testLoginIncorrect() throws InterruptedException {
         driver.get(url);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        
+
         WebElement user = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", user);
         user.clear();
-        user.sendKeys("10-Khue");
+        user.sendKeys("adam"); // sai: chữ thường
 
         WebElement pass = driver.findElement(By.id("password"));
         pass.clear();
-        pass.sendKeys("Khue123");
+        pass.sendKeys("0000"); // sai password
 
         WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
-        Thread.sleep(1000); // Đợi scroll hoàn tất
-        
+        Thread.sleep(1000);
+
         try {
             submit.click();
         } catch (Exception e) {
-            // Nếu click thông thường bị chặn, dùng JavaScript click
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submit);
         }
 
         WebElement status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("status")));
         String statusText = status.getText().trim();
 
-        Assertions.assertEquals("Congratulations!", statusText, "Expected status to show success message after submitting.");
+        Assertions.assertEquals("Login failed! Please try again.", statusText,
+                "Expected failure message for incorrect credentials.");
     }
 
+    // T03: Đăng nhập TLU
     @Test
     @Order(3)
     void testLoginSinhVienTLU() {
@@ -138,7 +139,6 @@ public class LoginTest {
         ));
         loginButton.click();
 
-        // Chờ trang chủ load bằng cách đợi URL thay đổi hoặc một phần tử đặc trưng xuất hiện
         wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("/login")));
         try {
             Thread.sleep(2000);
