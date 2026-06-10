@@ -31,7 +31,6 @@ jobs:
 
     - name: Run testLoginIncorrectFail
       run: mvn -B clean test -Dtest=LoginTest#testLoginIncorrectFail -Dheadless=true
-      continue-on-error: true
 
     - name: Upload Reports
       if: always()
