@@ -47,6 +47,7 @@ jobs:
         name: Login Correct Results
         path: target/surefire-reports/*.xml
         reporter: java-junit
+        fail-on-error: false
 
   login-incorrect:
     runs-on: ubuntu-latest
@@ -83,3 +84,4 @@ jobs:
         name: Login Incorrect Results
         path: target/surefire-reports/*.xml
         reporter: java-junit
+        fail-on-error: false

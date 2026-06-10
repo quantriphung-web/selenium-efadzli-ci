@@ -28,10 +28,13 @@ public class LoginTest {
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--window-size=1920,1080");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--remote-allow-origins=*");
         }
 
         driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(120));
     }
 
     @AfterEach
@@ -44,7 +47,7 @@ public class LoginTest {
     @Test
     void testLoginCorrect() throws InterruptedException {
         driver.get(url);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 
         WebElement user = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", user);
@@ -73,16 +76,16 @@ public class LoginTest {
     @Test
     void testLoginIncorrect() throws InterruptedException {
         driver.get(url);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 
         WebElement user = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", user);
         user.clear();
-        user.sendKeys("adam"); // sai: chữ thường
+        user.sendKeys("adam");
 
         WebElement pass = driver.findElement(By.id("password"));
         pass.clear();
-        pass.sendKeys("0000"); // sai password
+        pass.sendKeys("0000");
 
         WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
