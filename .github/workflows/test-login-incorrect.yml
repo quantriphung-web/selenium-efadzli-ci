@@ -1,4 +1,4 @@
-name: Test Login Incorrect
+name: Test Login Incorrect (Expected Fail)
 
 on:
   push:
@@ -29,21 +29,22 @@ jobs:
       with:
         chrome-version: stable
 
-    - name: Run testLoginIncorrect
-      run: mvn -B clean test -Dtest=LoginTest#testLoginIncorrect -Dheadless=true
+    - name: Run testLoginIncorrectFail
+      run: mvn -B clean test -Dtest=LoginTest#testLoginIncorrectFail -Dheadless=true
+      continue-on-error: true
 
     - name: Upload Reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: surefire-reports-incorrect
+        name: surefire-reports-incorrect-fail
         path: target/surefire-reports/
 
     - name: Publish Test Report
       if: always()
       uses: dorny/test-reporter@v1
       with:
-        name: Login Incorrect Results
+        name: Login Incorrect (Expected Fail)
         path: target/surefire-reports/*.xml
         reporter: java-junit
         fail-on-error: false

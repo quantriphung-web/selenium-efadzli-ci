@@ -103,4 +103,33 @@ public class LoginTest {
         Assertions.assertNotEquals("Congratulations!", actual,
                 "Login with wrong credentials should NOT show success message.");
     }
+
+    @Test
+    void testLoginIncorrectFail() throws InterruptedException {
+        driver.get(url);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+
+        WebElement user = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", user);
+        user.clear();
+        user.sendKeys("adam");
+
+        WebElement pass = driver.findElement(By.id("password"));
+        pass.clear();
+        pass.sendKeys("0000");
+
+        WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
+        Thread.sleep(1000);
+
+        try {
+            submit.click();
+        } catch (Exception e) {
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submit);
+        }
+
+        WebElement status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("status")));
+        Assertions.assertEquals("Congratulations!", status.getText().trim(),
+                "This test is expected to fail - wrong credentials should not succeed.");
+    }
 }
