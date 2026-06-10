@@ -98,7 +98,9 @@ public class LoginTest {
         }
 
         WebElement status = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("status")));
-        Assertions.assertEquals("Congratulations!", status.getText().trim(), // cố tình sai → fail
-                "Expected failure message for incorrect credentials.");
+        String actual = status.getText().trim();
+
+        Assertions.assertNotEquals("Congratulations!", actual,
+                "Login with wrong credentials should NOT show success message.");
     }
 }
