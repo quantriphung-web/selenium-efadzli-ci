@@ -85,7 +85,7 @@ public class LoginTest {
 
         WebElement pass = driver.findElement(By.id("password"));
         pass.clear();
-        pass.sendKeys("0000");
+        pass.sendKeys("Adam123");
 
         WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
@@ -116,7 +116,7 @@ public class LoginTest {
 
         WebElement pass = driver.findElement(By.id("password"));
         pass.clear();
-        pass.sendKeys("0000");
+        pass.sendKeys("Adam123");
 
         WebElement submit = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("submitButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior:'smooth',block:'center'});", submit);
